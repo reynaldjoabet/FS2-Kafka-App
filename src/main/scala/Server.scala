@@ -29,6 +29,9 @@ object  Server{
           .withPort(Port.fromInt(appConfig.serverConfig.port.value ).get)
           .withHost(Host.fromString(appConfig.serverConfig.host.value).get )
           .build
+          .onFinalize(
+              IO.println("closing resources")
+          )
           .use(_ =>IO.never)
         )
 

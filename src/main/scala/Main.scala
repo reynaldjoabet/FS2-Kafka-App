@@ -5,8 +5,8 @@ object Main extends  IOApp {
   
   override def run(args: List[String]): IO[ExitCode] = (for {
     appConfig <- Stream.eval(AppConfig.config.load)
-    _<- Server.stream(appConfig)
-  } yield ()).compile.drain.as(ExitCode.Success)
+    server<- Server.stream(appConfig)
+  } yield server).compile.drain.as(ExitCode.Success)
 
 
 }
