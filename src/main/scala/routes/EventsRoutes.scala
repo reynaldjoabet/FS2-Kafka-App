@@ -1,23 +1,27 @@
 package routes
-import model._
+import model.Event
+import kafka._
 import org.http4s.dsl.Http4sDsl
-import cats.effect.IO
-object EventsRoutes  extends  Http4sDsl[IO]{
+import cats.effect.Async
+import cats.effect.kernel.Resource.Pure
+import cats.effect.std.Console
+import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
+final case class EventsRoutes[F[_]:Async](kafkaProducerAlgebra: KafkaProducerAlgebra[F])  extends  Http4sDsl[F]{
 
   import org.http4s.server.Router
-  import org.http4s.{HttpApp, HttpRoutes}
+  import org.http4s.{ HttpRoutes}
 
   private  val prefix="/api/v1"
-  private val routes= HttpRoutes.of[IO] {
+  private val routes= HttpRoutes.of[F] {
     case GET -> Root / "health" => Ok("Doing just fine dude")
 
     case req@POST -> Root/"event"=>
       req.attemptAs[Event]
-        .foldF(
+        .foldF( 
           _ =>BadRequest("An error occurred ,check the request body"),
-           event => IO.println(event).*> (Created("Created"))
+           event => /*kafkaProducerAlgebra.publish(event).*>*/ (Created("Created"))
         )
   }
 
-  val router: HttpRoutes[IO] = Router(prefix->routes)
+  val router: HttpRoutes[F] = Router(prefix->routes)
 }
