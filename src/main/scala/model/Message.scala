@@ -1,8 +1,7 @@
 package model
-import io.circe.generic.semiauto.deriveCodec
 import io.circe.Decoder.decodeString
 import  io.circe.Encoder.encodeString
-import io.circe.syntax._
+
 final case class Message(value: String)extends  AnyVal
 
 

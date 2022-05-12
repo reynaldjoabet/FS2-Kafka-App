@@ -10,14 +10,9 @@ import org.http4s.{Http, Method, Request, Response}
 import org.http4s.server.Server
 import org.http4s.server.middleware.{CORS, CORSConfig, HSTS}
 import routes.EventsRoutes
-import cats.effect.Async
-import kafka.KafkaProducerAlgebra
+import kafka.{KafkaConsumerAlgebra, KafkaProducerAlgebra}
 import cats.implicits._
-import cats.Defer
-import cats.effect.kernel.Spawn
 object  Server{
-
-
 
   val config =
         CORSConfig.default
@@ -30,13 +25,16 @@ object  Server{
     def stream(appConfig:AppConfig):Stream[IO, Unit] =for {
         _ <- Stream.eval(Console[IO].println("Starting server"))
         kafkaProducerAlgebra<- Stream(KafkaProducerAlgebra.impl[IO](appConfig.kafkaConfig))
+        kafkaConsumerAlgebra<- Stream(KafkaConsumerAlgebra.impl[IO](appConfig.kafkaConfig))
+        //_<-Stream.eval(kafkaConsumerAlgebra.consume.compile.drain.start)
         _<-  Stream.eval(EmberServerBuilder.default[IO]
           .withHttpApp(CORS(HSTS(EventsRoutes(kafkaProducerAlgebra).router.orNotFound),config))
           .withPort(Port.fromInt(appConfig.serverConfig.port.value ).get)
           .withHost(Host.fromString(appConfig.serverConfig.host.value).get )
           .build
           .useForever
-        )
+        ).concurrently(kafkaConsumerAlgebra.consume)
+
 
     } yield  ()
 

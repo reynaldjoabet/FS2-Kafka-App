@@ -3,8 +3,7 @@ import model.Event
 import kafka._
 import org.http4s.dsl.Http4sDsl
 import cats.effect.Async
-import cats.effect.kernel.Resource.Pure
-import cats.effect.std.Console
+import cats.implicits._
 import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
 final case class EventsRoutes[F[_]:Async](kafkaProducerAlgebra: KafkaProducerAlgebra[F])  extends  Http4sDsl[F]{
 
@@ -19,7 +18,7 @@ final case class EventsRoutes[F[_]:Async](kafkaProducerAlgebra: KafkaProducerAlg
       req.attemptAs[Event]
         .foldF( 
           _ =>BadRequest("An error occurred ,check the request body"),
-           event => /*kafkaProducerAlgebra.publish(event).*>*/ (Created("Created"))
+           event => kafkaProducerAlgebra.publish(event) *> (Created("Created"))
         )
   }
 

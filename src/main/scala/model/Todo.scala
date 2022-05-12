@@ -1,5 +1,5 @@
 package model
-import io.circe.generic.semiauto.deriveCodec
+
 final case class Todo(value:String) extends  AnyVal
 
 

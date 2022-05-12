@@ -1,7 +1,7 @@
 package model
 import io.circe.generic.semiauto.deriveCodec
 import org.http4s.circe.jsonOf
-import io.circe.{Codec, Decoder}
+import io.circe.{Codec}
 import org.http4s.EntityDecoder
 import cats.effect.IO
 final case class Event(
@@ -18,6 +18,6 @@ object Event{
 
   implicit  val eventCodec: Codec.AsObject[Event] =deriveCodec[Event]
 
-  implicit  val eventEntityDecoder= jsonOf[IO,Event]
+  implicit  val eventEntityDecoder: EntityDecoder[IO, Event] = jsonOf[IO,Event]
 
 }
