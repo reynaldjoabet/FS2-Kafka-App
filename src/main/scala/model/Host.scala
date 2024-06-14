@@ -1,3 +1,3 @@
 package model
 
-final case class Host(value:String)
+final case class Host(value: String)

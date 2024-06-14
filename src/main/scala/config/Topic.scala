@@ -1,3 +1,3 @@
 package config
 
-final case class Topic(value:String) extends  AnyVal
+final case class Topic(value: String) extends AnyVal
