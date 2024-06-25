@@ -1,5 +1,5 @@
 ThisBuild / version      := "0.1.1"
-ThisBuild / scalaVersion := "2.13.10"
+ThisBuild / scalaVersion := "2.13.13"
 name                     := "fs2-kafka-App"
 val Logback           = "1.2.11"
 val http4sVersion     = "0.23.11"
