@@ -5,7 +5,7 @@ val Logback           = "1.2.11"
 val http4sVersion     = "0.23.11"
 val circeVersion      = "0.14.1"
 val cirisVersion      = "2.3.2"
-val catsEffectVersion = "3.3.11"
+val catsEffectVersion = "3.3.14"
 val fs2KafkaVersion   = "3.5.1"
 
 val httpDependencies = Seq(
